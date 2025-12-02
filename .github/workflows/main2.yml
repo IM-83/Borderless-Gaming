@@ -1,0 +1,29 @@
+name: Build VS2017 Project
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-2022  # Updated: 'windows-2019' is also deprecated
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4  # Updated to v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2  # Updated to v2
+
+    - name: Restore NuGet Packages
+      run: nuget restore
+
+    - name: Build Solution
+      # REMINDER: Change 'YourSolutionName.sln' to the real filename in the repo!
+      run: msbuild Borderless-Gaming.sln /p:Configuration=Release /p:Platform="Any CPU"
+
+    - name: Upload EXE
+      uses: actions/upload-artifact@v4  # Updated to v4 (Fixes your error)
+      with:
+        name: Compiled-Game
+        path: |
+          **\bin\Release\**\*.exe
+          **\bin\Release\**\*.dll
